@@ -18,8 +18,8 @@ def list_folders(subpath=""):
     except ValueError:
         abort(404)  # 如果路径不合法，则返回404
 
-    print(relative_path)
-    print(subpath)
+    if app.debug: print(relative_path)
+    if app.debug: print(subpath)
     # 检查生成的路径是否在目标目录之下
     if not os.path.abspath(relative_path).startswith(os.path.abspath(DIRECTORY_PATH)):
         abort(403)  # 如果尝试访问基目录外的文件，则禁止访问
@@ -31,7 +31,7 @@ def list_folders(subpath=""):
     # 遍历目录，添加文件和目录到列表
     for entry in os.listdir(relative_path):
         path = safe_join(relative_path, entry)
-        print(path)
+        if app.debug: print(path)
         if os.path.isfile(path):
             entries['files'].append(safe_join(subpath, entry))
         elif os.path.isdir(path):
@@ -45,7 +45,7 @@ def package_folder(subpath):
         safe_path = safe_join(DIRECTORY_PATH, subpath)
         if not os.path.abspath(safe_path).startswith(os.path.abspath(DIRECTORY_PATH)):
             abort(403)  # 禁止访问
-        print(safe_path)
+        if app.debug: print(safe_path)
         
         # 检查文件夹是否存在
         if not os.path.isdir(safe_path):
@@ -66,7 +66,7 @@ def package_folder(subpath):
 def download_file(subpath):
     with lock:
         safe_path = safe_join(DIRECTORY_PATH, subpath)
-        print(safe_path)
+        if app.debug: print(safe_path)
         # print(os.path.abspath(DIRECTORY_PATH))
         if not os.path.abspath(safe_path).startswith(os.path.abspath(DIRECTORY_PATH)):
             abort(403)  # 禁止访问
