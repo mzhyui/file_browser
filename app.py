@@ -7,7 +7,7 @@ from werkzeug.utils import secure_filename, safe_join
 
 app = Flask(__name__)
 lock = Lock()
-DIRECTORY_PATH = './'
+DIRECTORY_PATH = './.git/'
 
 @app.route('/')
 def list_folders(subpath=""):
@@ -30,7 +30,8 @@ def list_folders(subpath=""):
 @app.route('/<path:subpath>')
 def show_subfolder(subpath):
     # 安全性检查
-    safe_path = safe_join(DIRECTORY_PATH, subpath)
+    safe_path = subpath
+    print(safe_path)
     if not os.path.abspath(safe_path).startswith(os.path.abspath(DIRECTORY_PATH)):
         abort(403)  # 禁止访问
     if os.path.isdir(safe_path):
