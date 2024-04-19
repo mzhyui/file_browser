@@ -47,28 +47,10 @@ def show_subfolder(subpath):
         return render_template('folders.html', folders=entries['directories'], files=entries['files'])
     abort(404)  # 目录不存在
 
-@app.route('/files', methods=['GET'])
-def list_files_and_directories():
-    # 确保只有合法路径被访问
-    if not os.path.exists(DIRECTORY_PATH):
-        return "Directory not found.", 404
-
-    entries = {'files': [], 'directories': []}
-    # 遍历目录，添加文件和目录到列表
-    for entry in os.listdir(DIRECTORY_PATH):
-        path = os.path.join(DIRECTORY_PATH, entry)
-        if os.path.isfile(path):
-            entries['files'].append(entry)
-        elif os.path.isdir(path):
-            entries['directories'].append(entry)
-
-    # 返回文件和目录列表的JSON
-    return jsonify(entries)
-
 @app.route('/package/<path:subpath>', methods=['GET'])
 def package_folder(subpath):
     with lock:
-        safe_path = safe_join(DIRECTORY_PATH, subpath)
+        safe_path = subpath
         if not os.path.abspath(safe_path).startswith(os.path.abspath(DIRECTORY_PATH)):
             abort(403)  # 禁止访问
         print(safe_path)
